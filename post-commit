@@ -1,0 +1,26 @@
+#Linux SVN钩子设置
+第一步:建立你的web程序目录
+
+mkdir /var/www/html/test
+进入你建立的web程序目录(svn checkout可以简写为co)
+
+svn checkout svn://localhost/svntest //不重命名文件夹，直接在当前目录下检出
+svn checkout svn://localhost/svntest test //检出文件并且重命名文件夹
+
+第二步:在项目库的 hooks/ 目录下新建 post-commit 文件 【钩子脚本】
+
+添加脚本内容如下
+
+#！/bin/sh
+export LANG=en_US.UTF-8
+SVN=/usr/bin/svn            #这里配置的是svn安装bin目录下的svn文件
+WEB=/var/www/html/test      #要更新的目录
+$SVN update $WEB --username user --password password
+chown -R www:www  $WEB
+
+其中SVN=右边改成 svn 命令位置
+WEB=右边改成你实际的web目录
+
+第三步:让post-commit有执行的权限
+
+chmod a+x post-commit
